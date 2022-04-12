@@ -1,0 +1,44 @@
+{
+  "name": "minimize-webext-i18n-json",
+  "version": "1.0.0",
+  "description": "Minimize browser extensions' `_locales/*/messages.json` files. Remove \"description\", \"example\", spaces, inline placeholders",
+  "main": "index.js",
+  "scripts": {
+    "test": "node ./test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/WofWca/minimize-webext-i18n-json.git"
+  },
+  "keywords": [
+    "webextension",
+    "i18n",
+    "compress",
+    "compressor",
+    "minminification",
+    "minifier",
+    "minify",
+    "optimize",
+    "optimizer",
+    "compressor",
+    "json",
+    "internalization",
+    "localization",
+    "l10n",
+    "webext",
+    "extension",
+    "chrome",
+    "firefox",
+    "bundle",
+    "webpack"
+  ],
+  "author": {
+    "name": "WofWca",
+    "email": "wofwca@protonmail.com"
+  },
+  "license": "UNLICENSED",
+  "bugs": {
+    "url": "https://github.com/WofWca/minimize-webext-i18n-json/issues"
+  },
+  "homepage": "https://github.com/WofWca/minimize-webext-i18n-json#readme"
+}

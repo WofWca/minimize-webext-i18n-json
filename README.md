@@ -29,7 +29,7 @@ Output:
 
 ## Usage
 
-Put roughly this in your bundle script:
+Put roughly this in your build script:
 
 ```js
 const minimizeWebextI18nJson = require('minimize-webext-i18n-json');

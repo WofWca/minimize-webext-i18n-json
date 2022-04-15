@@ -3,8 +3,9 @@
   "version": "1.0.0",
   "description": "Minimize browser extensions' `_locales/*/messages.json` files. Remove \"description\", \"example\", spaces, inline placeholders",
   "main": "index.js",
+  "bin": "cli.js",
   "scripts": {
-    "test": "node ./test.js"
+    "test": "node ./test/minimizeJsonString.test.js; node ./test/minimizeDirectory.test.js"
   },
   "repository": {
     "type": "git",

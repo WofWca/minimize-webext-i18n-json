@@ -29,13 +29,32 @@ Output:
 
 ## Usage
 
-Put roughly this in your build script:
+### With a build script
 
-```js
-const minimizeWebextI18nJson = require('minimize-webext-i18n-json');
-  // for each `messages.json` file.
-  const minimizedFileContentString = minimizeWebextI18nJson(fileContentString);
-```
+Either
+
+* ```js
+  const { minimizeDirectory } = require('minimize-webext-i18n-json');
+    // ...
+    // After you've put `_locales` in `dist`:
+    await minimizeDirectory('_locales');
+  ```
+
+* Or:
+
+  ```js
+  const { minimizeJsonString } = require('minimize-webext-i18n-json');
+    // ...
+    // for each `messages.json` file.
+    const minimizedFileContentString = minimizeJsonString(fileContentString);
+  ```
+
+### I don't use a build script
+
+1. Make sure you have no uncommitted changes in `_locales`.
+1. Run `npx minimize-webext-i18n-json _locales`.
+1. Run `git checkout -- _locales` to revert the changes.
+<!-- 3. Make an archive for distribution. -->
 
 ### Webpack
 

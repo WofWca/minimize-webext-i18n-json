@@ -67,3 +67,9 @@ new CopyPlugin({
       from: '_locales/*/messages.json',
       transform: (content) => minimizeWebextI18nJson(content),
 ```
+
+<br>
+<br>
+<br>
+
+![GPLv3 Logo](https://www.gnu.org/graphics/gplv3-with-text-136x68.png)

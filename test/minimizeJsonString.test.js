@@ -1,5 +1,7 @@
-// import compress from './index.js';
-const compress = require('./index.js');
+// @ts-check
+
+// import { minimizeJsonString } from '../index.js';
+const { minimizeJsonString } = require('../index.js');
 
 function test() {
   const input = JSON.stringify({
@@ -55,7 +57,7 @@ function test() {
       // }
     }
   })
-  const result = compress(input);
+  const result = minimizeJsonString(input);
   const spacesRemoved = result.startsWith('{"');
   if (result !== expect || !spacesRemoved) {
     console.error('Test failed. Expected:\n', JSON.parse(expect), '\ngot:\n', JSON.parse(result));

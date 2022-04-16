@@ -96,14 +96,13 @@ function inlinePlaceholder(messageObj, placeholderName) {
 }
 
 /**
- * @param {string} json
- * @returns {string}
+ * Minimizes the messagesObject by mutating it.
+ * @param {Messages} messagesObject
+ * @returns {void}
  */
-// export default function(json) {
-module.exports = function(json) {
-  /** @type {Messages} */
-  const o = JSON.parse(json);
-  for (const [_key, messageObj] of Object.entries(o)) {
+// export default function(messagesObject) {
+module.exports = function(messagesObject) {
+  for (const [_key, messageObj] of Object.entries(messagesObject)) {
     delete messageObj.description;
     // const placeholders = messageObj.placeholders;
     if (messageObj.placeholders) {
@@ -132,5 +131,4 @@ module.exports = function(json) {
       }
     }
   }
-  return JSON.stringify(o);
 }

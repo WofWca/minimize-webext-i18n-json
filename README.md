@@ -47,6 +47,12 @@ Either
     // ...
     // for each `messages.json` file.
     const minimizedFileContentString = minimizeJsonString(fileContentString);
+
+    // or
+    // const { minimizeObject } = require('minimize-webext-i18n-json');
+    // const object = JSON.parse(fileContentString);
+    // minimizeObject(object);
+    // const minimizedFileContentString = JSON.stringify(object);
   ```
 
 ### I don't use a build script

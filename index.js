@@ -21,5 +21,7 @@
 
 // export { default as minimizeDirectory } from './minimizeDirectory.js';
 // export { default as minimizeJsonString } from './minimizeJsonString.js';
+// export { default as minimizeObject } from './minimizeObject.js';
 module.exports.minimizeDirectory = require('./minimizeDirectory.js');
 module.exports.minimizeJsonString = require('./minimizeJsonString.js');
+module.exports.minimizeObject = require('./minimizeObject');

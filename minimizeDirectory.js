@@ -29,11 +29,12 @@ const minimizeJsonString = require('./minimizeJsonString');
  * Minimizes files in the `_locales` directory in place (modifies the files). Make sure to `await` before using
  * the directory again.
  * @param {string} localesDir the path to the `_locales` directory.
+ * @param {Parameters<typeof minimizeJsonString>[1]} [options]
  * @param {BufferEncoding} encoding
  * @example
  * await minimizeDirectory('dist/_locales');
  */
-module.exports = async function(localesDir, encoding = 'utf8') {
+module.exports = async function(localesDir, options, encoding = 'utf8') {
   const langPaths = await fs.readdir(localesDir, { encoding });
   const doneP = Promise.all(langPaths.map(async (langPath) => {
     const pathToMessagesFile = path.resolve(localesDir, langPath, 'messages.json');
@@ -47,7 +48,7 @@ module.exports = async function(localesDir, encoding = 'utf8') {
     }
     try {
       const content = await messagesFile.readFile({ encoding });
-      const minimized = minimizeJsonString(content);
+      const minimized = minimizeJsonString(content, options);
       // I thought we could just `await messagesFile.writeFile(`, but apparently it just appends.
       await messagesFile.truncate(0);
       await messagesFile.write(minimized, 0, encoding);

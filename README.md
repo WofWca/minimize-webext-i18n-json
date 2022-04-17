@@ -74,6 +74,22 @@ new CopyPlugin({
       transform: (content) => minimizeWebextI18nJson(content),
 ```
 
+## Unsafe minimizations
+
+They're off by default. These currently include placeholder inlining and placeholder name shortening. As the name implies, they're not safe. See the functions' docstrings for more info.
+
+To enable these, pass `{ unsafe: true }` as the second argument:
+
+```js
+minimizeDirectory('_locales', { unsafe: true })
+```
+
+For CLI, pass `unsafe` as the second argument (ordering matters):
+
+```bash
+npx minimize-webext-i18n-json _locales unsafe
+```
+
 <br>
 <br>
 <br>

@@ -98,32 +98,42 @@ function inlinePlaceholder(messageObj, placeholderName) {
 /**
  * Minimizes the messagesObject by mutating it.
  * @param {Messages} messagesObject
+ * @param {Object} [options]
+ * @param {boolean} [options.unsafe] - whether to use minimizations that may cause change in behavior,
+ * including possibly making the messages file invalid, which can make it impossible to install the extension
+ * (possibly only specifically in that language, which would be harded to detect).
+ * It is okay to use this if you review the original l10n files and do not notice anything that looks suspicious
+ * or like it could lead to undefined behavior. For example using different casing for placeholder definition and usage.
+ * Or something like this: `"message": "$AA$BB$"`, or this: `"placeholders": { "n$ame": ... }`
  * @returns {void}
  */
 // export default function(messagesObject) {
-module.exports = function(messagesObject) {
+module.exports = function(messagesObject, { unsafe = false } = {}) {
   for (const [_key, messageObj] of Object.entries(messagesObject)) {
     delete messageObj.description;
     // const placeholders = messageObj.placeholders;
     if (messageObj.placeholders) {
       // const placeholderNameSubstitutionGenerator = nameSubstitutionGenerator();
       for (const [placeholderName, pValue] of Object.entries(messageObj.placeholders)) {
-        // Technically unnecessary if we inline the placeholder
         delete pValue.example;
 
-        // TODO can placeholders be used inside other placeholders? If so, we have a bug.
+        if (unsafe) {
+          // TODO can placeholders be used inside other placeholders? If so, we have a bug.
 
-        // TODO it's also possible that `"message"` references a non-defined placeholder.
-        // We could delete such references.
-        // Though currently Chromium refuses to install such extensions anyway.
+          // TODO it's also possible that `"message"` references a non-defined placeholder.
+          // We could delete such references.
+          // Though currently Chromium refuses to install such extensions anyway.
 
-        if (numOccurences(messageObj.message, '$' + placeholderName + '$') <= 1) {
-          // TODO still do inline if the output would actually get shorter. Check with `JSON.stringify(messageObj)`?
-          inlinePlaceholder(messageObj, placeholderName);
+          if (numOccurences(messageObj.message, '$' + placeholderName + '$') <= 1) {
+            // TODO still do inline if the output would actually get shorter. Check with `JSON.stringify(messageObj)`?
+            inlinePlaceholder(messageObj, placeholderName);
+          }
         }
       }
 
-      shortenPlaceholderNames(messageObj);
+      if (unsafe) {
+        shortenPlaceholderNames(messageObj);
+      }
 
       // In case we inlined all the placeholders, or there were none in the first place.
       if (Object.keys(messageObj.placeholders).length <= 0) {

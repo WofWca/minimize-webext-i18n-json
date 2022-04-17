@@ -51,7 +51,33 @@ function test() {
       }
     }
   });
-  const expect = JSON.stringify({
+  const expectSafe = JSON.stringify({
+    hello: {
+      message: "Hello, $NAME$!\n$additional$. By the way, $NAME$, nice hat! Oh, and before I forget, $3",
+      placeholders: {
+        "NAME": {
+          content: "dear $1",
+          // example: "dear World"
+        },
+        "additional": {
+          content: "($2)",
+        }
+      }
+    },
+    weather: {
+      message: "Great weather today, isn't it!?",
+      // description: "A word about the weather"
+    },
+    bye: {
+      message: "Bye now, $friendName$!",
+      placeholders: {
+        friendName: {
+          content: "$1"
+        }
+      }
+    }
+  });
+  const expectUnsafe = JSON.stringify({
     hello: {
       message: "Hello, $a$!\n($2). By the way, $a$, nice hat! Oh, and before I forget, $3",
       placeholders: {
@@ -77,11 +103,20 @@ function test() {
       //   }
       // }
     }
-  })
-  const result = minimizeJsonString(input);
-  const spacesRemoved = result.startsWith('{"');
-  if (result !== expect || !spacesRemoved) {
-    console.error('Test failed. Expected:\n', JSON.parse(expect), '\ngot:\n', JSON.parse(result));
+  });
+  const resultSafe = minimizeJsonString(input);
+  const resultUnsafe = minimizeJsonString(input, { unsafe: true });
+  const spacesRemoved = resultSafe.startsWith('{"');
+  if (!spacesRemoved) {
+    console.error('Test failed. spaces not removed');
+    throw new Error();
+  }
+  if (resultSafe !== expectSafe) {
+    console.error('Test failed. Expected:\n', JSON.parse(expectSafe), '\ngot:\n', JSON.parse(resultSafe));
+    throw new Error();
+  }
+  if (resultUnsafe !== expectUnsafe) {
+    console.error('Test failed. Expected:\n', JSON.parse(expectUnsafe), '\ngot:\n', JSON.parse(resultUnsafe));
     throw new Error();
   }
   console.log('Success!');

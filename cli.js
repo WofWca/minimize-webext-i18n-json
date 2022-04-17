@@ -29,4 +29,7 @@ let localesPath = process.argv[2];
 if (localesPath === undefined) {
   localesPath = '_locales';
 }
-minimizeDirectory(localesPath);
+
+const unsafe = process.argv[3] === 'unsafe';
+
+minimizeDirectory(localesPath, { unsafe });

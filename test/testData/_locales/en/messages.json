@@ -1,6 +1,11 @@
 {
   "hello": {
-    "message": "Hello!",
-    "description": "Greeting"
+    "message": "Hello $NAME$!",
+    "description": "Greeting",
+    "placeholders": {
+      "NAME": {
+        "content": "$1"
+      }
+    }
   }
 }

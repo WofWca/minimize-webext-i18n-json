@@ -25,100 +25,145 @@
 const { minimizeJsonString } = require('../index.js');
 
 function test() {
-  const input = JSON.stringify({
-    hello: {
-      message: "Hello, $NAME$!\n$additional$. By the way, $NAME$, nice hat! Oh, and before I forget, $3",
-      placeholders: {
-        "NAME": {
-          content: "dear $1",
-          example: "dear World"
-        },
-        "additional": {
-          content: "($2)",
-        }
-      }
-    },
-    weather: {
-      message: "Great weather today, isn't it!?",
-      description: "A word about the weather"
-    },
-    bye: {
-      message: "Bye now, $friendName$!",
-      placeholders: {
-        friendName: {
-          content: "$1"
-        }
-      }
+  function expectEq(actual, expected) {
+    if (actual !== expected) {
+      console.error('Test failed. Expected:\n', expected, '\ngot:\n', actual);
+      throw new Error();
     }
-  });
-  const expectSafe = JSON.stringify({
-    hello: {
-      message: "Hello, $NAME$!\n$additional$. By the way, $NAME$, nice hat! Oh, and before I forget, $3",
-      placeholders: {
-        "NAME": {
-          content: "dear $1",
-          // example: "dear World"
-        },
-        "additional": {
-          content: "($2)",
+  }
+  {
+    const input = JSON.stringify({
+      hello: {
+        message: "Hello, $NAME$!\n$additional$. By the way, $NAME$, nice hat! Oh, and before I forget, $3",
+        placeholders: {
+          "NAME": {
+            content: "dear $1",
+            example: "dear World"
+          },
+          "additional": {
+            content: "($2)",
+          }
+        }
+      },
+      weather: {
+        message: "Great weather today, isn't it!?",
+        description: "A word about the weather"
+      },
+      bye: {
+        message: "Bye now, $friendName$!",
+        placeholders: {
+          friendName: {
+            content: "$1"
+          }
         }
       }
-    },
-    weather: {
-      message: "Great weather today, isn't it!?",
-      // description: "A word about the weather"
-    },
-    bye: {
-      message: "Bye now, $friendName$!",
-      placeholders: {
-        friendName: {
-          content: "$1"
+    });
+    const expectSafe = JSON.stringify({
+      hello: {
+        message: "Hello, $NAME$!\n$additional$. By the way, $NAME$, nice hat! Oh, and before I forget, $3",
+        placeholders: {
+          "NAME": {
+            content: "dear $1",
+            // example: "dear World"
+          },
+          "additional": {
+            content: "($2)",
+          }
+        }
+      },
+      weather: {
+        message: "Great weather today, isn't it!?",
+        // description: "A word about the weather"
+      },
+      bye: {
+        message: "Bye now, $friendName$!",
+        placeholders: {
+          friendName: {
+            content: "$1"
+          }
         }
       }
-    }
-  });
-  const expectUnsafe = JSON.stringify({
-    hello: {
-      message: "Hello, $a$!\n($2). By the way, $a$, nice hat! Oh, and before I forget, $3",
-      placeholders: {
-        // Used more than once, don't inline
-        "a": {
-          content: "dear $1",
-          // example: "dear World"
-        },
-        // "additional": {
-        //   content: "($2)",
+    });
+    const expectUnsafe = JSON.stringify({
+      hello: {
+        message: "Hello, $a$!\n($2). By the way, $a$, nice hat! Oh, and before I forget, $3",
+        placeholders: {
+          // Used more than once, don't inline
+          "a": {
+            content: "dear $1",
+            // example: "dear World"
+          },
+          // "additional": {
+          //   content: "($2)",
+          // }
+        }
+      },
+      weather: {
+        message: "Great weather today, isn't it!?"
+        // description: "A word about the weather"
+      },
+      bye: {
+        message: "Bye now, $1!",
+        // placeholders: {
+        //   friendName: {
+        //     content: "$1"
+        //   }
         // }
       }
-    },
-    weather: {
-      message: "Great weather today, isn't it!?"
-      // description: "A word about the weather"
-    },
-    bye: {
-      message: "Bye now, $1!",
-      // placeholders: {
-      //   friendName: {
-      //     content: "$1"
-      //   }
-      // }
+    });
+    const resultSafe = minimizeJsonString(input);
+    const resultUnsafe = minimizeJsonString(input, { unsafe: true });
+    const spacesRemoved = resultSafe.startsWith('{"');
+    if (!spacesRemoved) {
+      console.error('Test failed. spaces not removed');
+      throw new Error();
     }
-  });
-  const resultSafe = minimizeJsonString(input);
-  const resultUnsafe = minimizeJsonString(input, { unsafe: true });
-  const spacesRemoved = resultSafe.startsWith('{"');
-  if (!spacesRemoved) {
-    console.error('Test failed. spaces not removed');
-    throw new Error();
+    expectEq(resultSafe, expectSafe);
+    expectEq(resultUnsafe, expectUnsafe);
   }
-  if (resultSafe !== expectSafe) {
-    console.error('Test failed. Expected:\n', JSON.parse(expectSafe), '\ngot:\n', JSON.parse(resultSafe));
-    throw new Error();
+
+  // Unsafe tests:
+  {
+    const minimizeUnsafe = (input) => minimizeJsonString(input, { unsafe: true });
+    // Candidate placeholder name is already contained in the string.
+    // Already exists as a placeholder:
+    expectEq(minimizeUnsafe(JSON.stringify({
+      hello: {
+        message: "$well$ $well$ $well$, $a$ $a$",
+        placeholders: {
+          "well": { content: "$1"},
+          "a": { content: "$2"}
+        }
+      },
+    })), JSON.stringify({
+      hello: {
+        message: "$b$ $b$ $b$, $c$ $c$",
+        placeholders: {
+          "b": { content: "$1"},
+          "c": { content: "$2"}
+        }
+      },
+    }));
+    // Already exists as text between placeholders
+    expectEq(minimizeUnsafe(JSON.stringify({
+      hello: {
+        message: "$EAT$a$BURGER$ $EAT$B$BURGER$",
+        placeholders: {
+          "EAT": { content: "$1" },
+          "BURGER": { content: "$2" }
+        }
+      }
+    })), JSON.stringify({
+      hello: {
+        message: "$c$a$d$ $c$B$d$",
+        placeholders: {
+          "c": { content: "$1" },
+          "d": { content: "$2" }
+        }
+      }
+    }));
   }
-  if (resultUnsafe !== expectUnsafe) {
-    console.error('Test failed. Expected:\n', JSON.parse(expectUnsafe), '\ngot:\n', JSON.parse(resultUnsafe));
-    throw new Error();
-  }
+
   console.log('Success!');
 }
 test();

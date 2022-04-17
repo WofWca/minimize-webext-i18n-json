@@ -54,6 +54,14 @@ function replaceAll(str, substr, newSubstr) {
 function numOccurences(str, substr) {
   return str.split(substr).length - 1;
 }
+/**
+ * @param {string} str
+ * @param {string} substr
+ * @returns {number}
+ */
+function numOccurencesCaseInsensitive(str, substr) {
+  return numOccurences(str.toLowerCase(), substr.toLowerCase());
+}
 
 // TODO more ZIP-optimized substitutions (more widely-used letters should go first). See how Uglify.js does it.
 const nameSubstitutionPool = 'abcdefghijklmnopqrstuvwxyz';
@@ -74,7 +82,13 @@ function shortenPlaceholderNames(messageObj) {
   const placeholders = messageObj.placeholders;
   const placeholderNameSubstitutionGenerator = nameSubstitutionGenerator();
   for (const [placeholderName, pValue] of Object.entries(placeholders)) {
-    const newPlaceholderName = placeholderNameSubstitutionGenerator.next().value;
+    // So we don't replace `"$EAT$a$BURGER$"` with `"$a$a$b"`, but with `$b$a$c$`, so it doesn't start
+    // looking like there are two possible positions for the `$a$` placeholder).
+    let newPlaceholderName;
+    do {
+      newPlaceholderName = placeholderNameSubstitutionGenerator.next().value;
+    } while (numOccurencesCaseInsensitive(messageObj.message, '$' + newPlaceholderName + '$') >= 1);
+
     messageObj.message = replaceAll(messageObj.message, '$' + placeholderName + '$', '$' + newPlaceholderName + '$');
     delete placeholders[placeholderName];
     placeholders[newPlaceholderName] = pValue;

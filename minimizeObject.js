@@ -154,7 +154,7 @@ function inlinePlaceholder(messageObj, placeholderName) {
  * @param {Object} [options]
  * @param {boolean} [options.unsafe] - whether to use minimizations that may cause change in behavior,
  * including possibly making the messages file invalid, which can make it impossible to install the extension
- * (possibly only specifically in that language, which would be harded to detect).
+ * (possibly only specifically in that language, which would be harder to detect).
  * It is okay to use this if you review the original l10n files and do not notice anything that looks suspicious
  * or like it could lead to undefined behavior. For example using different casing for placeholder definition and usage.
  * Or something like this: `"message": "$AA$BB$"`, or this: `"placeholders": { "n$ame": ... }`

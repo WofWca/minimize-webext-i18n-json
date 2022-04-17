@@ -180,6 +180,15 @@ function test() {
         }
       }
     }));
+
+    // I don't even know if this makes sense to test it.
+    expectEq(minimizeUnsafe(JSON.stringify({ hello: {
+      message: "$NA$ME$",
+      placeholders: { "NA$ME": { content: "$1" } }
+    }})), JSON.stringify({ hello: {
+      message: "$NA$ME$",
+      placeholders: { "NA$ME": { content: "$1" } }
+    }}));
   }
 
   console.log('Success!');

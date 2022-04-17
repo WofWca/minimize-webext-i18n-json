@@ -79,6 +79,20 @@ function containsInDifferentCase(str, substr) {
 function placeholderUsageCaseInconsistent(messageStr, placeholderName) {
   return containsInDifferentCase(messageStr, '$' + placeholderName + '$');
 }
+/**
+ * @param {string} placeholderName 
+ */
+function containsUnsafeCharacters(placeholderName) {
+  // Just why would anyone do that, but ok.
+  return placeholderName.includes('$');
+}
+/** Well, except for the removal of the `example` field. */
+function shouldNotModifyPlaceholder(messageStr, placeholderName) {
+  return (
+    placeholderUsageCaseInconsistent(messageStr, placeholderName)
+    || containsUnsafeCharacters(placeholderName)
+  );
+}
 
 // TODO more ZIP-optimized substitutions (more widely-used letters should go first). See how Uglify.js does it.
 const nameSubstitutionPool = 'abcdefghijklmnopqrstuvwxyz';
@@ -99,7 +113,7 @@ function shortenPlaceholderNames(messageObj) {
   const placeholders = messageObj.placeholders;
   const placeholderNameSubstitutionGenerator = nameSubstitutionGenerator();
   for (const [placeholderName, pValue] of Object.entries(placeholders)) {
-    if (placeholderUsageCaseInconsistent(messageObj.message, placeholderName)) {
+    if (shouldNotModifyPlaceholder(messageObj.message, placeholderName)) {
       continue;
     }
 
@@ -158,7 +172,7 @@ module.exports = function(messagesObject, { unsafe = false } = {}) {
           // Though currently Chromium refuses to install such extensions anyway.
 
           if (
-            !placeholderUsageCaseInconsistent(messageObj.message, placeholderName)
+            !shouldNotModifyPlaceholder(messageObj.message, placeholderName)
             // TODO still do inline if the output would actually get shorter. Check with `JSON.stringify(messageObj)`?
             && numOccurences(messageObj.message, '$' + placeholderName + '$') <= 1
           ) {

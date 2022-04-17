@@ -138,6 +138,12 @@ function shortenPlaceholderNames(messageObj) {
  */
 function inlinePlaceholder(messageObj, placeholderName) {
   const placeholder = messageObj.placeholders[placeholderName];
+  // TODO this can be incorrect, consider this input:
+  // `{ message: "$AA$BB$CC$", placeholders: { "BB": { content: "bb" }, "AA":..., "CC":... }`. The correct placeholders
+  // (I assume) would be `$AA$` and `$CC$`, but this code would recognize $BB$ as a placeholder, and replace
+  // the message with `$AAbbCC$`.
+  // So we probably need to first parse the "message" field and then search the appropriate placeholder definitions
+  // Same for `shortenPlaceholderNames`.
   messageObj.message = replaceAll(messageObj.message, '$' + placeholderName + '$', placeholder.content);
   delete messageObj.placeholders[placeholderName];
 }

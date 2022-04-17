@@ -1,6 +1,6 @@
 {
   "name": "minimize-webext-i18n-json",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "description": "Minimize browser extensions' `_locales/*/messages.json` files. Remove \"description\", \"example\", spaces, inline placeholders",
   "main": "index.js",
   "bin": "cli.js",

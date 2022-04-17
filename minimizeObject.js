@@ -62,6 +62,23 @@ function numOccurences(str, substr) {
 function numOccurencesCaseInsensitive(str, substr) {
   return numOccurences(str.toLowerCase(), substr.toLowerCase());
 }
+/**
+ * @param {string} str
+ * @param {string} substr
+ * @returns {boolean}
+ */
+function containsInDifferentCase(str, substr) {
+  return numOccurences(str, substr) !== numOccurencesCaseInsensitive(str, substr);
+}
+/**
+ * When this happens, we don't know how the browser will behave - will it recognize the placeholder, disregarding the
+ * fact that it's written in a different case? Will it replace it with an empty string? Will it keep it as it is?
+ * @param {string} messageStr
+ * @param {string} placeholderName
+ */
+function placeholderUsageCaseInconsistent(messageStr, placeholderName) {
+  return containsInDifferentCase(messageStr, '$' + placeholderName + '$');
+}
 
 // TODO more ZIP-optimized substitutions (more widely-used letters should go first). See how Uglify.js does it.
 const nameSubstitutionPool = 'abcdefghijklmnopqrstuvwxyz';
@@ -82,6 +99,10 @@ function shortenPlaceholderNames(messageObj) {
   const placeholders = messageObj.placeholders;
   const placeholderNameSubstitutionGenerator = nameSubstitutionGenerator();
   for (const [placeholderName, pValue] of Object.entries(placeholders)) {
+    if (placeholderUsageCaseInconsistent(messageObj.message, placeholderName)) {
+      continue;
+    }
+
     // So we don't replace `"$EAT$a$BURGER$"` with `"$a$a$b"`, but with `$b$a$c$`, so it doesn't start
     // looking like there are two possible positions for the `$a$` placeholder).
     let newPlaceholderName;
@@ -136,8 +157,11 @@ module.exports = function(messagesObject, { unsafe = false } = {}) {
           // We could delete such references.
           // Though currently Chromium refuses to install such extensions anyway.
 
-          if (numOccurences(messageObj.message, '$' + placeholderName + '$') <= 1) {
+          if (
+            !placeholderUsageCaseInconsistent(messageObj.message, placeholderName)
             // TODO still do inline if the output would actually get shorter. Check with `JSON.stringify(messageObj)`?
+            && numOccurences(messageObj.message, '$' + placeholderName + '$') <= 1
+          ) {
             inlinePlaceholder(messageObj, placeholderName);
           }
         }

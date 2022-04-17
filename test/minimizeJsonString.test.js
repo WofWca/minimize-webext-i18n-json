@@ -162,6 +162,24 @@ function test() {
         }
       }
     }));
+
+    // placeholderUsageCaseInconsistent
+    expectEq(minimizeUnsafe(JSON.stringify({
+      hello: {
+        // Don't know how the browser will behave, so let's keep it.
+        message: "$name$",
+        placeholders: {
+          "NAME": { content: "$1" },
+        }
+      }
+    })), JSON.stringify({
+      hello: {
+        message: "$name$",
+        placeholders: {
+          "NAME": { content: "$1" },
+        }
+      }
+    }));
   }
 
   console.log('Success!');

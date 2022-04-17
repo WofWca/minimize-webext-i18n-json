@@ -75,9 +75,6 @@ function shortenPlaceholderNames(messageObj) {
   const placeholderNameSubstitutionGenerator = nameSubstitutionGenerator();
   for (const [placeholderName, pValue] of Object.entries(placeholders)) {
     const newPlaceholderName = placeholderNameSubstitutionGenerator.next().value;
-    // TODO replace with direct placeholder usage?
-    // https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Internationalization#direct_placeholder_usage
-    // As an option? Keep in mind that the same placeholder can be used several times in the same `"message"`.
     messageObj.message = replaceAll(messageObj.message, '$' + placeholderName + '$', '$' + newPlaceholderName + '$');
     delete placeholders[placeholderName];
     placeholders[newPlaceholderName] = pValue;
@@ -85,6 +82,7 @@ function shortenPlaceholderNames(messageObj) {
 }
 
 /**
+ * // https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Internationalization#direct_placeholder_usage
  * Mutates the `messageObj`
  * @param {Messages[string]} messageObj
  * @param {keyof Messages[string]['placeholders']} placeholderName

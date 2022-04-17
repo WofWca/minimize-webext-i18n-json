@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 /**
  * @license
  * Copyright (C) 2022  WofWca <wofwca@protonmail.com>

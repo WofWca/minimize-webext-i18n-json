@@ -181,6 +181,25 @@ function test() {
       }
     }));
 
+    // Yes, this currently fails.
+    expectEq(minimizeUnsafe(JSON.stringify({ hello: {
+      // It probably should be recognized as "aa" and "cc" placeholders, but for safety it's
+      // better to keep it, I think.
+      message: "$aa$bb$cc$ $bb$",
+      placeholders: {
+        "bb": { content: "$1" },
+        "aa": { content: "$2" },
+        "cc": { content: "$3" },
+      }
+    }})), JSON.stringify({ hello: {
+      message: "$aa$bb$cc$ $bb$",
+      placeholders: {
+        "bb": { content: "$1" },
+        "aa": { content: "$2" },
+        "cc": { content: "$3" },
+      }
+    }}));
+
     // I don't even know if this makes sense to test it.
     expectEq(minimizeUnsafe(JSON.stringify({ hello: {
       message: "$NA$ME$",

@@ -94,4 +94,4 @@ npx minimize-webext-i18n-json _locales unsafe
 <br>
 <br>
 
-![GPLv3 Logo](https://www.gnu.org/graphics/gplv3-with-text-136x68.png)
+[![GPLv3 Logo](https://www.gnu.org/graphics/gplv3-with-text-136x68.png)](./COPYING)

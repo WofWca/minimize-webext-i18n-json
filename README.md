@@ -76,7 +76,7 @@ new CopyPlugin({
 
 ## Unsafe minimizations
 
-They're off by default. These currently include placeholder inlining and placeholder name shortening. As the name implies, they're not safe. See the functions' docstrings for more info.
+They're off by default. These currently include placeholder inlining and placeholder name shortening. As the name implies, they may transform a file incorrectly. See the functions' docstrings for more info.
 
 To enable these, pass `{ unsafe: true }` as the second argument:
 

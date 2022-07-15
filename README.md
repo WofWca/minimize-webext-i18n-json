@@ -71,7 +71,7 @@ new CopyPlugin({
   patterns: [
     {
       from: '_locales/*/messages.json',
-      transform: (content) => minimizeWebextI18nJson(content),
+      transform: (content) => minimizeJsonString(content),
 ```
 
 ## Unsafe minimizations
